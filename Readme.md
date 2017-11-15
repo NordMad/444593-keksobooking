@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Андрей Паньков](https://up.htmlacademy.ru/javascript/11/user/444593).
-* Наставник: `Неизвестно`.
+* Наставник: [Никита Ткачук](https://htmlacademy.ru/profile/id450211).
 
 ---
 
