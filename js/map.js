@@ -6,171 +6,88 @@ var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var adverts = [
+var offerTitles = [
   {
-    'author': {
-      'avatar': 'img/avatars/user01.png'
-    },
-    'offer': {
-      'title': 'Большая уютная квартира',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'flat',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 8),
-      'checkin': '13:00',
-      'checkout': '12:00',
-      'features': ['wifi', 'parking', 'washer', 'elevator'],
-      'description': '',
-      'photos': []
-    },
-
-    'location': ''
+    title: 'Большая уютная квартира',
+    type: 'flat'
   },
   {
-    'author': {
-      'avatar': 'img/avatars/user02.png'
-    },
-    'offer': {
-      'title': 'Маленькая неуютная квартира',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'flat',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 3),
-      'checkin': '13:00',
-      'checkout': '12:00',
-      'features': ['wifi', 'washer'],
-      'description': '',
-      'photos': []
-    },
-    'location': ''
+    title: 'Маленькая неуютная квартира',
+    type: 'flat'
   },
   {
-    'author': {
-      'avatar': 'img/avatars/user03.png'
-    },
-    'offer': {
-      'title': 'Огромный прекрасный дворец',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'house',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 3),
-      'checkin': '14:00',
-      'checkout': '12:00',
-      'features': ['wifi', 'dishwasher', 'parking', 'washer', 'conditioner'],
-      'description': '',
-      'photos': []
-    },
-    'location': ''
+    title: 'Огромный прекрасный дворец',
+    type: 'house'
   },
   {
-    'author': {
-      'avatar': 'img/avatars/user04.png'
-    },
-    'offer': {
-      'title': 'Маленький ужасный дворец',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'house',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 3),
-      'checkin': '13:00',
-      'checkout': '12:00',
-      'features': ['wifi', 'dishwasher', 'parking', 'washer'],
-      'description': '',
-      'photos': []
-    },
-    'location': ''
+    title: 'Маленький ужасный дворец',
+    type: 'house'
   },
   {
-    'author': {
-      'avatar': 'img/avatars/user05.png'
-    },
-    'offer': {
-      'title': 'Красивый гостевой домик',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'house',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 3),
-      'checkin': '14:00',
-      'checkout': '12:00',
-      'features': ['wifi', 'parking', 'conditioner'],
-      'description': '',
-      'photos': []
-    },
-    'location': ''
+    title: 'Красивый гостевой домик',
+    type: 'house'
   },
   {
-    'author': {
-      'avatar': 'img/avatars/user06.png'
-    },
-    'offer': {
-      'title': 'Некрасивый негостеприимный домик',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'house',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 3),
-      'checkin': '13:00',
-      'checkout': '12:00',
-      'features': ['wifi', 'parking'],
-      'description': '',
-      'photos': []
-    },
-    'location': ''
+    title: 'Некрасивый негостеприимный домик',
+    type: 'house'
   },
   {
-    'author': {
-      'avatar': 'img/avatars/user07.png'
-    },
-    'offer': {
-      'title': 'Уютное бунгало далеко от моря',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'bungalo',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 3),
-      'checkin': '13:00',
-      'checkout': '12:00',
-      'features': ['wifi', 'parking', 'washer', 'conditioner'],
-      'description': '',
-      'photos': []
-    },
-    'location': ''
+    title: 'Уютное бунгало далеко от моря',
+    type: 'bungalo'
   },
   {
-    'author': {
-      'avatar': 'img/avatars/user08.png'
-    },
-    'offer': {
-      'title': 'Неуютное бунгало по колено в воде',
-      'address': '',
-      'price': getRandomNumber(1000, 1000000),
-      'type': 'bungalo',
-      'rooms': getRandomNumber(1, 5),
-      'guests': getRandomNumber(1, 3),
-      'checkin': '14:00',
-      'checkout': '12:00',
-      'features': ['wifi'],
-      'description': '',
-      'photos': []
-    },
-    'location': ''
-  },
+    title: 'Неуютное бунгало по колено в воде',
+    type: 'bungalo'
+  }
 ];
 
-for (var a = 0; a < adverts.length; a++) {
-  var x = getRandomNumber(300, 900);
-  var y = getRandomNumber(100, 500);
-  adverts[a].offer.address = x + ', ' + y;
-  adverts[a].location = {
-    'x': x,
-    'y': y
-  };
-}
+var offerTypeNames = {
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
+var time = ['12:00', '13:00', '14:00'];
+
+var featureTypes = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+
+var adverts = [];
+var getAdverts = function (advertsNumber) {
+  for (var b = 0; b < advertsNumber; b++) {
+    var offerAddress = {
+      x: getRandomNumber(300, 900),
+      y: getRandomNumber(100, 500),
+    };
+    var randomFeatures = [];
+    for (var i = 0; i < featureTypes.length; i++) {
+      if (getRandomNumber(1, 100) > 50) {
+        randomFeatures.push(featureTypes[i]);
+      }
+    }
+    adverts[b] =
+    {
+      'author': {
+        'avatar': 'img/avatars/user0' + (b + 1) + '.png'
+      },
+      'offer': {
+        'title': offerTitles[b].title,
+        'address': offerAddress.x + ', ' + offerAddress.y,
+        'price': getRandomNumber(1000, 1000000),
+        'type': offerTitles[b].type,
+        'rooms': getRandomNumber(1, 5),
+        'guests': getRandomNumber(1, 8),
+        'checkin': time[getRandomNumber(0, 1)],
+        'checkout': time[getRandomNumber(1, 2)],
+        'features': randomFeatures,
+        'description': '',
+        'photos': []
+      },
+      'location': offerAddress
+    };
+  }
+};
+
+getAdverts(8);
 
 // 2) У блока .map убераю класс .map--faded
 
@@ -206,7 +123,6 @@ var mapFilters = document.querySelector('.map__filters-container');
 
 var cloneCardTemplate = function (advert) {
   var cardElement = cardTemplate.cloneNode(true);
-  var offerType = advert.offer.type;
   var p = cardElement.querySelectorAll('p');
   var facilities = advert.offer.features;
   var popupFeatures = cardElement.querySelector('.popup__features');
@@ -219,14 +135,7 @@ var cloneCardTemplate = function (advert) {
   // Вывожу цену
   cardElement.querySelector('.popup__price').innerHTML = advert.offer.price + '&#x20bd;/ночь';
   // Тип жилья
-  if (offerType === 'flat') {
-    offerType = 'Квартира';
-    if (offerType === 'house') {
-      offerType = 'Дом';
-    } else {
-      offerType = 'Бунгало';
-    }
-  }
+  cardElement.querySelector('h4').textContent = offerTypeNames[advert.offer.type];
   // Количество комнат и гостей
   p[2].textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   // Время заезда и выезда
