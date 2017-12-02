@@ -1,6 +1,9 @@
 'use strict';
 
-// 1) Создаю массив с объявлениями
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
+// Создаю массив с объявлениями
 
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -89,18 +92,23 @@ var getAdverts = function (advertsNumber) {
 
 getAdverts(8);
 
-// 2) У блока .map убераю класс .map--faded
+// У блока .map убераю класс .map--faded
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+var noticeForm = document.querySelector('.notice__form');
+var noticeFormFieldset = noticeForm.querySelectorAll('fieldset');
+// Добавляю полям формы атрибут disabled
+for (var i = 0; i < noticeFormFieldset.length; i++) {
+  noticeFormFieldset[i].disabled = true;
+}
 
-// 3) Создаю метки на карте
+// Макркеры на карте
 
 var markersFragment = document.createDocumentFragment();
 var mapMarkers = document.querySelector('.map__pins');
-var muffinMarker = document.querySelector('.map__pin--main');
+var muffin = document.querySelector('.map__pin--main');
 
-for (var i = 0; i < adverts.length; i++) {
+for (i = 0; i < adverts.length; i++) {
   var newMarker = document.createElement('button');
   newMarker.style.left = parseInt(adverts[i].location.x, 10) + 'px';
   newMarker.style.top = parseInt(adverts[i].location.y + 40, 10) + 'px';
@@ -109,11 +117,7 @@ for (var i = 0; i < adverts.length; i++) {
   markersFragment.appendChild(newMarker);
 }
 
-// 4) Отрисовываю фрагмент markersFragment в .map__pins
-
-mapMarkers.insertBefore(markersFragment, muffinMarker);
-
-// 5) Создаю шаблон объявления
+// Создаю шаблон объявления
 
 var template = document.querySelector('template');
 var cardTemplate = template.content.querySelector('.map__card');
@@ -160,3 +164,73 @@ var cloneCardTemplate = function (advert) {
 };
 // Вставляю первый по порядку созданный шаблон в .map, перед блоком .map__filters-container
 map.insertBefore(cloneCardTemplate(adverts[0]), mapFilters);
+
+var activateMap = function () {
+  // показываю карту
+  map.classList.remove('map--faded');
+  // размещаю маркеры на карте
+  mapMarkers.insertBefore(markersFragment, muffin);
+  // делаю форму ...
+  noticeForm.classList.remove('notice__form--disabled');
+  // ...и её поля активными
+  for (i = 0; i < noticeFormFieldset.length; i++) {
+    noticeFormFieldset[i].disabled = false;
+  }
+};
+// Добавляю обработчик события отпущенной кнопки мыши на кекс-маркере
+muffin.addEventListener('mouseup', function () {
+  activateMap();
+});
+// Дублирую обработчик для клавиши Enter
+muffin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activateMap();
+  }
+});
+
+// Показ/скрытие карточки объявления .popup
+
+// Скрываю карточку объявления
+var mapPopup = document.querySelector('.map__card');
+mapPopup.style = 'display: none;';
+
+var clickedElement = null;
+// Функция. При нажатии на любой из элементов map__pin, добавляю ему класс map__pin--active и показываю элемент .popup
+var toggleMarkers = function (target) {
+  if (target.classList.contains('map__pin')) {
+    if (clickedElement) {
+      clickedElement.classList.remove('map__pin--active');
+    }
+    clickedElement = target;
+    clickedElement.classList.toggle('map__pin--active');
+    mapPopup.style = 'display: block;';
+  } else {
+    return;
+  }
+};
+// Добавляю обработчик события 'клик мыши' на mapMarkers и вызываю в нём фуикцию toggleMarkers
+mapMarkers.addEventListener('click', function (evt) {
+  var targetParent = evt.target.parentNode;
+  toggleMarkers(targetParent);
+});
+
+var popupCloseButton = mapPopup.querySelector('.popup__close');
+// Функция закрытия объявления .popup
+var closePopup = function () {
+  mapPopup.style = 'display: none;';
+  clickedElement.classList.remove('map__pin--active');
+};
+// Закрытие .popup по клику мыши
+mapPopup.addEventListener('click', function (evt) {
+  if (evt.target === popupCloseButton) {
+    closePopup();
+  }
+});
+// Дублирую обработчик на mapMarkers для клавиши Enter и закрытие .popup для ESC
+mapMarkers.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    toggleMarkers(evt.target);
+  } else if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+});
