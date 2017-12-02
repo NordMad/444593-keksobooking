@@ -114,6 +114,7 @@ for (i = 0; i < adverts.length; i++) {
   newMarker.style.top = parseInt(adverts[i].location.y + 40, 10) + 'px';
   newMarker.className = 'map__pin';
   newMarker.innerHTML = '<img src="' + adverts[i].author.avatar + '" width="40" height="40" draggable="false">';
+  newMarker.dataset.pinIndex = i;
   markersFragment.appendChild(newMarker);
 }
 
@@ -162,8 +163,6 @@ var cloneCardTemplate = function (advert) {
   cardElement.querySelector('.popup__avatar').src = advert.author.avatar;
   return cardElement;
 };
-// Вставляю первый по порядку созданный шаблон в .map, перед блоком .map__filters-container
-map.insertBefore(cloneCardTemplate(adverts[0]), mapFilters);
 
 var activateMap = function () {
   // показываю карту
@@ -190,20 +189,33 @@ muffin.addEventListener('keydown', function (evt) {
 
 // Показ/скрытие карточки объявления .popup
 
-// Скрываю карточку объявления
-var mapPopup = document.querySelector('.map__card');
-mapPopup.style = 'display: none;';
-
+var mapPopup = null;
 var clickedElement = null;
-// Функция. При нажатии на любой из элементов map__pin, добавляю ему класс map__pin--active и показываю элемент .popup
+var popupCloseButton = null;
+// Функция закрытия объявления .popup
+var closePopup = function () {
+  if (mapPopup) {
+    map.removeChild(mapPopup);
+    mapPopup = null;
+  }
+  if (clickedElement) {
+    clickedElement.classList.remove('map__pin--active');
+    clickedElement = null;
+  }
+};
+// Функция. При нажатии на любой из элементов map__pin, добавляю ему класс map__pin--active и показываю соответствующий элемент .popup
 var toggleMarkers = function (target) {
   if (target.classList.contains('map__pin')) {
-    if (clickedElement) {
-      clickedElement.classList.remove('map__pin--active');
-    }
+    closePopup();
     clickedElement = target;
     clickedElement.classList.toggle('map__pin--active');
-    mapPopup.style = 'display: block;';
+    var pinIndex = clickedElement.dataset.pinIndex;
+    if (pinIndex) {
+      var advert = adverts[pinIndex];
+      mapPopup = cloneCardTemplate(advert);
+      popupCloseButton = mapPopup.querySelector('.popup__close');
+      map.insertBefore(mapPopup, mapFilters);
+    }
   } else {
     return;
   }
@@ -214,14 +226,8 @@ mapMarkers.addEventListener('click', function (evt) {
   toggleMarkers(targetParent);
 });
 
-var popupCloseButton = mapPopup.querySelector('.popup__close');
-// Функция закрытия объявления .popup
-var closePopup = function () {
-  mapPopup.style = 'display: none;';
-  clickedElement.classList.remove('map__pin--active');
-};
 // Закрытие .popup по клику мыши
-mapPopup.addEventListener('click', function (evt) {
+document.addEventListener('click', function (evt) {
   if (evt.target === popupCloseButton) {
     closePopup();
   }
