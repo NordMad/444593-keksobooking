@@ -270,6 +270,8 @@ var typePrices = {
   palace: 10000
 };
 
+price.min = typePrices[type.value];
+
 type.addEventListener('change', function () {
   var typeValue = type.value;
   for (i = 0; i < typeOptions.length; i++) {
@@ -282,6 +284,8 @@ type.addEventListener('change', function () {
 var rooms = noticeForm.querySelector('#room_number');
 var capacity = noticeForm.querySelector('#capacity');
 
+capacity.value = rooms.value;
+
 rooms.addEventListener('change', function () {
   if (rooms.value) {
     capacity.value = rooms.value;
@@ -291,12 +295,22 @@ rooms.addEventListener('change', function () {
   }
 });
 
+capacity.addEventListener('change', function () {
+  if (capacity.value > rooms.value) {
+    capacity.setCustomValidity('Количество комнат не должно превышать количество гостей');
+    capacity.invalid = true;
+  } else {
+    capacity.setCustomValidity('');
+    capacity.invalid = false;
+  }
+});
+
 // Не валидные поля выделяю красной рамкой
 
 var formInput = noticeForm.querySelectorAll('input');
 
 for (i = 0; i < formInput.length; i++) {
   formInput[i].addEventListener('invalid', function (evt) {
-    evt.target.style = 'border: 2px solid red';
+    evt.target.style = 'border-color: red';
   });
 }
