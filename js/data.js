@@ -3,12 +3,11 @@
 // Модуль, который создает данные
 
 (function () {
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
   // Функция рассчёта случайного числа
-  window.getRandomNumber = function (min, max) {
+  var getRandomNumber = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
+
   // Данные
   window.data = {
     offerTitles: [
@@ -52,34 +51,22 @@
     },
     time: ['12:00', '13:00', '14:00'],
     featureTypes: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-    adverts: [],
-    isEscEvent: function (evt, action) {
-      if (evt.keyCode === ESC_KEYCODE) {
-        action();
-      }
-    },
-    isEnterEvent: function (evt, action) {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        action();
-      }
-    }
   };
 
-  // Функция создания объявления
-  var adverts = window.data.adverts;
   var offerTitles = window.data.offerTitles;
   var featureTypes = window.data.featureTypes;
   var time = window.data.time;
-
-  var getAdvert = function (advertsNumber) {
+  // Функция создания объявления
+  var getAdverts = function (advertsNumber) {
+    var adverts = [];
     for (var i = 0; i < advertsNumber; i++) {
       var offerAddress = {
-        x: window.getRandomNumber(300, 900),
-        y: window.getRandomNumber(100, 500),
+        x: getRandomNumber(300, 900),
+        y: getRandomNumber(100, 500),
       };
       var randomFeatures = [];
       for (var j = 0; j < featureTypes.length; j++) {
-        if (window.getRandomNumber(1, 100) > 50) {
+        if (getRandomNumber(1, 100) > 50) {
           randomFeatures.push(featureTypes[j]);
         }
       }
@@ -91,12 +78,12 @@
         'offer': {
           'title': offerTitles[i].title,
           'address': offerAddress.x + ', ' + offerAddress.y,
-          'price': window.getRandomNumber(1000, 1000000),
+          'price': getRandomNumber(1000, 1000000),
           'type': offerTitles[i].type,
-          'rooms': window.getRandomNumber(1, 5),
-          'guests': window.getRandomNumber(1, 8),
-          'checkin': time[window.getRandomNumber(0, 1)],
-          'checkout': time[window.getRandomNumber(1, 2)],
+          'rooms': getRandomNumber(1, 5),
+          'guests': getRandomNumber(1, 8),
+          'checkin': time[getRandomNumber(0, 1)],
+          'checkout': time[getRandomNumber(1, 2)],
           'features': randomFeatures,
           'description': '',
           'photos': []
@@ -104,6 +91,7 @@
         'location': offerAddress
       };
     }
+    return adverts;
   };
-  getAdvert(8);
+  window.data.adverts = getAdverts(8);
 })();

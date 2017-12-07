@@ -21,10 +21,9 @@
   var popupCloseButton = null;
   var mapPopup = null;
   var clickedElement = null;
-
   window.map = {
     // Активировать карту
-    activateMap: function () {
+    activate: function () {
       // показываю карту
       map.classList.remove('map--faded');
       // размещаю маркеры на карте
@@ -63,19 +62,29 @@
       } else {
         return;
       }
+    },
+    isEscEvent: function (evt, action) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        action();
+      }
+    },
+    isEnterEvent: function (evt, action) {
+      if (evt.keyCode === ENTER_KEYCODE) {
+        action();
+      }
     }
   };
 
-  var escEvent = window.data.isEscEvent;
-  var enterEvent = window.data.isEnterEvent;
+  var escEvent = window.map.isEscEvent;
+  var enterEvent = window.map.isEnterEvent;
   // Добавляю обработчик события отпущенной кнопки мыши на кекс-маркере
   muffin.addEventListener('mouseup', function (evt) {
-    escEvent(evt, window.map.activateMap());
+    escEvent(evt, window.map.activate());
   });
 
   // Дублирую обработчик для клавиши Enter
   muffin.addEventListener('keydown', function (evt) {
-    enterEvent(evt, window.map.activateMap());
+    enterEvent(evt, window.map.activate());
   });
 
   // Добавляю обработчик события 'клик мыши' на mapMarkers и вызываю в нём фуикцию toggleMarkers
