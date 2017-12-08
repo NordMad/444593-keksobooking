@@ -19,4 +19,57 @@
       return markersFragment;
     }
   };
+
+  var map = document.querySelector('.map');
+  var mapMarkers = document.querySelector('.map__pins');
+  var muffin = map.querySelector('.map__pin--main');
+  var address = document.querySelector('#address');
+
+  muffin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var oldCoords = {
+      x: evt.screenX,
+      y: evt.screenY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: moveEvt.screenX - oldCoords.x,
+        y: moveEvt.screenY - oldCoords.y
+      };
+
+      oldCoords = {
+        x: moveEvt.screenX,
+        y: moveEvt.screenY
+      };
+
+      var markerX = muffin.offsetLeft + shift.x;
+      var markerY = muffin.offsetTop + shift.y;
+
+      if (markerY < 131) {
+        markerY = 131;
+      }
+      if (markerY > 531) {
+        markerY = 531;
+      }
+
+      muffin.style.top = markerY + 'px';
+      muffin.style.left = markerX + 'px';
+
+      address.value = 'x: ' + (markerX) + ', y: ' + (markerY - 31);
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+      window.map.activate();
+      mapMarkers.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    mapMarkers.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 })();

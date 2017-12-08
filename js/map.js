@@ -75,18 +75,6 @@
     }
   };
 
-  var escEvent = window.map.isEscEvent;
-  var enterEvent = window.map.isEnterEvent;
-  // Добавляю обработчик события отпущенной кнопки мыши на кекс-маркере
-  muffin.addEventListener('mouseup', function (evt) {
-    escEvent(evt, window.map.activate());
-  });
-
-  // Дублирую обработчик для клавиши Enter
-  muffin.addEventListener('keydown', function (evt) {
-    enterEvent(evt, window.map.activate());
-  });
-
   // Добавляю обработчик события 'клик мыши' на mapMarkers и вызываю в нём фуикцию toggleMarkers
   mapMarkers.addEventListener('click', function (evt) {
     var targetParent = evt.target.parentNode;
