@@ -6,40 +6,37 @@
   var noticeForm = document.querySelector('.notice__form');
   var timeIn = noticeForm.querySelector('#timein');
   var timeOut = noticeForm.querySelector('#timeout');
+  var time = window.data.time;
+
+  var syncValues = function (element, value) {
+    element.value = value;
+  };
+
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
+  };
 
   // Синхронизирую поля «время заезда» и «время выезда»
-  timeIn.addEventListener('change', function () {
 
-    if (timeIn.value) {
-      timeOut.value = timeIn.value;
-    }
+  timeIn.addEventListener('change', function () {
+    window.synchronizeFields(timeIn, timeOut, time, time, syncValues);
   });
 
   timeOut.addEventListener('change', function () {
-    if (timeOut.value) {
-      timeIn.value = timeOut.value;
-    }
+    window.synchronizeFields(timeOut, timeIn, time, time, syncValues);
   });
 
   // Значение поля «Тип жилья» синхронизирую с минимальной ценой
 
   var type = noticeForm.querySelector('#type');
-  var typeOptions = type.querySelectorAll('option');
   var price = noticeForm.querySelector('#price');
-  var typePrices = {
-    bungalo: 0,
-    flat: 1000,
-    house: 5000,
-    palace: 10000
-  };
+  var typeNames = ['flat', 'bungalo', 'palace', 'house'];
+  var typePrices = [1000, 0, 10000, 5000];
 
-  price.min = typePrices[type.value];
+  window.synchronizeFields(type, price, typeNames, typePrices, syncValueWithMin);
 
   type.addEventListener('change', function () {
-    var typeValue = type.value;
-    for (var i = 0; i < typeOptions.length; i++) {
-      price.min = typePrices[typeValue];
-    }
+    window.synchronizeFields(type, price, typeNames, typePrices, syncValueWithMin);
   });
 
   // Количество комнат связываю с количеством гостей
