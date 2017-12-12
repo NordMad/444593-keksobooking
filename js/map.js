@@ -6,21 +6,19 @@
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
   var map = document.querySelector('.map');
+  var mapFilters = map.querySelector('.map__filters-container');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFormFieldset = noticeForm.querySelectorAll('fieldset');
   // Добавляю полям формы атрибут disabled
   for (var i = 0; i < noticeFormFieldset.length; i++) {
     noticeFormFieldset[i].disabled = true;
   }
-
-  var mapFilters = document.querySelector('.map__filters-container');
   var mapMarkers = document.querySelector('.map__pins');
   var muffin = document.querySelector('.map__pin--main');
   var pins = window.pin.getMarkers();
   var adverts = window.data.adverts;
-  var popupCloseButton = null;
-  var mapPopup = null;
   var clickedElement = null;
+  var mapPopup = null;
   window.map = {
     // Активировать карту
     activate: function () {
@@ -35,12 +33,14 @@
         noticeFormFieldset[i].disabled = false;
       }
     },
-    // Функция закрытия объявления .popup
     closePopup: function () {
       if (mapPopup) {
         map.removeChild(mapPopup);
         mapPopup = null;
       }
+      window.map.deactivateClickedElement();
+    },
+    deactivateClickedElement: function () {
       if (clickedElement) {
         clickedElement.classList.remove('map__pin--active');
         clickedElement = null;
@@ -55,9 +55,7 @@
         var pinIndex = clickedElement.dataset.pinIndex;
         if (pinIndex) {
           var advert = adverts[pinIndex];
-          mapPopup = window.card.cloneCardTemplate(advert);
-          popupCloseButton = mapPopup.querySelector('.popup__close');
-          map.insertBefore(mapPopup, mapFilters);
+          mapPopup = window.showCard(advert, map, mapFilters, window.map.closePopup);
         }
       } else {
         return;
@@ -80,12 +78,7 @@
     var targetParent = evt.target.parentNode;
     window.map.toggleMarkers(targetParent);
   });
-  // Закрытие .popup по клику мыши
-  document.addEventListener('click', function (evt) {
-    if (evt.target === popupCloseButton) {
-      window.map.closePopup();
-    }
-  });
+
   // Дублирую обработчик на mapMarkers для клавиши Enter и закрытие .popup для ESC
   mapMarkers.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
