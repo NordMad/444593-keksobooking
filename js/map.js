@@ -15,13 +15,12 @@
   }
   var mapMarkers = document.querySelector('.map__pins');
   var muffin = document.querySelector('.map__pin--main');
-  var pins = window.pin.getMarkers();
-  var adverts = window.data.adverts;
   var clickedElement = null;
   var mapPopup = null;
   window.map = {
     // Активировать карту
     activate: function () {
+      var pins = window.pin.getMarkers();
       // показываю карту
       map.classList.remove('map--faded');
       // размещаю маркеры на карте
@@ -48,6 +47,7 @@
     },
     // Функция. При нажатии на любой из элементов map__pin, добавляю ему класс map__pin--active и показываю соответствующий элемент .popup
     toggleMarkers: function (target) {
+      var adverts = window.data.adverts;
       if (target.classList.contains('map__pin')) {
         window.map.closePopup();
         clickedElement = target;
@@ -87,4 +87,10 @@
       window.map.closePopup();
     }
   });
+
+  var successHandler = function (data) {
+    window.data.adverts = data;
+  };
+
+  window.backend.load(successHandler, window.data.errorHandler);
 })();

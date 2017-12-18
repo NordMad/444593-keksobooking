@@ -74,4 +74,13 @@
       evt.target.style = 'border-color: red';
     });
   }
+
+  var resetForm = function () {
+    noticeForm.reset();
+  };
+
+  noticeForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(noticeForm), resetForm, window.data.errorHandler);
+    evt.preventDefault();
+  });
 })();
