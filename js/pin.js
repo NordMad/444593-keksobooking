@@ -3,30 +3,99 @@
 // Модуль для отрисовки пина и взаимодействия с ним
 
 (function () {
-  window.pin = {
-    getMarkers: function () {
-      var adverts = window.data.adverts;
-      var markersFragment = document.createDocumentFragment();
-      for (var i = 0; i < adverts.length; i++) {
-        var newMarker = document.createElement('button');
-        newMarker.style.left = parseInt(adverts[i].location.x, 10) + 'px';
-        newMarker.style.top = parseInt(adverts[i].location.y, 10) + 'px';
-        newMarker.className = 'map__pin';
-        newMarker.innerHTML = '<img src="' + adverts[i].author.avatar + '" width="40" height="40" draggable="false">';
-        newMarker.dataset.pinIndex = i;
-        markersFragment.appendChild(newMarker);
-      }
-      return markersFragment;
+  var map = document.querySelector('.map');
+  var mapMarkers = map.querySelector('.map__pins');
+  var muffin = map.querySelector('.map__pin--main');
+
+  var mapFilters = map.querySelector('.map__filters');
+  var housingType = mapFilters.querySelector('#housing-type');
+  var housingPrice = mapFilters.querySelector('#housing-price');
+  var housingRooms = mapFilters.querySelector('#housing-rooms');
+  var housingGuests = mapFilters.querySelector('#housing-guests');
+
+  var housingFeatures = map.querySelector('.features');
+  var features = housingFeatures.querySelectorAll('input');
+
+  var getMarkers = function (adverts) {
+    var markersFragment = document.createDocumentFragment();
+    for (var i = 0; i < adverts.length; i++) {
+      var newMarker = document.createElement('button');
+      newMarker.style.left = parseInt(adverts[i].location.x, 10) + 'px';
+      newMarker.style.top = parseInt(adverts[i].location.y, 10) + 'px';
+      newMarker.className = 'map__pin';
+      newMarker.innerHTML = '<img src="' + adverts[i].author.avatar + '" width="40" height="40" draggable="false">';
+      newMarker.dataset.pinIndex = i;
+      markersFragment.appendChild(newMarker);
+    }
+    return markersFragment;
+  };
+  var removeMarkers = function () {
+    var markers = document.querySelectorAll('.map__pin');
+    for (var i = 0; i < markers.length - 1; i++) {
+      mapMarkers.removeChild(markers[i]);
     }
   };
-  var map = document.querySelector('.map');
-  var mapMarkers = document.querySelector('.map__pins');
-  var muffin = map.querySelector('.map__pin--main');
+
+  var testAdvertFeatures = function (filter, facilities) {
+    if (filter.length === 0) {
+      return true;
+    }
+
+    for (var i = 0; i < filter.length; i++) {
+      if (!facilities.includes(filter[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  var prices = {
+    any: [0, Number.MAX_VALUE],
+    low: [0, 10000],
+    middle: [10000, 50000],
+    high: [50000, Number.MAX_VALUE]
+  };
+
+  window.debounce = function (timerReset, func, delay) {
+    window.clearTimeout(timerReset);
+    timerReset = window.setTimeout(function () {
+      func();
+    }, delay);
+  };
+
+  window.refreshFilteredAdverts = function () {
+    var filteredFeatures = Array.from(features).filter(function (it) {
+      return it.checked;
+    }).map(function (checked) {
+      return checked.value;
+    });
+
+    removeMarkers();
+    var adverts = window.data.adverts;
+    var range = prices[housingPrice.value];
+    var filteredAdverts = adverts.filter(function (advert) {
+      return (housingType.value === 'any' || advert.offer.type === housingType.value) &&
+      advert.offer.price >= range[0] && advert.offer.price < range[1] &&
+      (housingRooms.value === 'any' || advert.offer.rooms === parseInt(housingRooms.value, 10)) &&
+      (housingGuests.value === 'any' || advert.offer.guests === parseInt(housingGuests.value, 10)) &&
+      testAdvertFeatures(filteredFeatures, advert.offer.features);
+    }).slice(0, 5);
+
+    window.data.filteredAdverts = filteredAdverts;
+    mapMarkers.insertBefore(getMarkers(filteredAdverts), muffin);
+  };
+
+  var prevTimer;
+
+  mapFilters.addEventListener('change', function () {
+    window.debounce(prevTimer, window.refreshFilteredAdverts, 500);
+  });
+
   var address = document.querySelector('#address');
 
   muffin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-
     var oldCoords = {
       x: evt.screenX,
       y: evt.screenY

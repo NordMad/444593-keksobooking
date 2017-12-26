@@ -20,9 +20,9 @@
       // Вывожу заголовок объявления
       cardElement.querySelector('h3').textContent = advert.offer.title;
       // Вывожу адрес
-      cardElement.querySelector('small').innerHTML = advert.offer.address;
+      cardElement.querySelector('small').textContent = advert.offer.address;
       // Вывожу цену
-      cardElement.querySelector('.popup__price').innerHTML = advert.offer.price + '&#x20bd;/ночь';
+      cardElement.querySelector('.popup__price').textContent = advert.offer.price + ' \u20BD' + '/ночь';
       // Тип жилья
       cardElement.querySelector('h4').textContent = offerTypeNames[advert.offer.type];
       // Количество комнат и гостей
