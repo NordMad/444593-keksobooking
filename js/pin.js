@@ -57,17 +57,18 @@
     high: [50000, Number.MAX_VALUE]
   };
 
-  window.refreshFilteredAdverts = function () {
-    var checked = Array.from(features).map(function (it) {
-      if (it.checked) {
-        return it.value;
-      } else {
-        return null;
-      }
-    });
+  window.debounce = function (timerReset, func, delay) {
+    window.clearTimeout(timerReset);
+    timerReset = window.setTimeout(function () {
+      func();
+    }, delay);
+  };
 
-    var filteredFeatures = checked.filter(function (feature) {
-      return feature !== null;
+  window.refreshFilteredAdverts = function () {
+    var filteredFeatures = Array.from(features).filter(function (it) {
+      return it.checked;
+    }).map(function (checked) {
+      return checked.value;
     });
 
     removeMarkers();
@@ -88,10 +89,7 @@
   var prevTimer;
 
   mapFilters.addEventListener('change', function () {
-    window.clearTimeout(prevTimer);
-    prevTimer = window.setTimeout(function () {
-      window.refreshFilteredAdverts();
-    }, 500);
+    window.debounce(prevTimer, window.refreshFilteredAdverts, 500);
   });
 
   var address = document.querySelector('#address');
