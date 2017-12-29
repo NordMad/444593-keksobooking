@@ -1,7 +1,5 @@
 'use strict';
 
-// Модуль для отрисовки элемента на карточке
-
 (function () {
   var template = document.querySelector('template');
   var cardTemplate = template.content.querySelector('.map__card');
@@ -14,8 +12,11 @@
       var cardElement = cardTemplate.cloneNode(true);
       var p = cardElement.querySelectorAll('p');
       var facilities = advert.offer.features;
+      var photos = advert.offer.photos;
       var popupFeatures = cardElement.querySelector('.popup__features');
       var features = popupFeatures.querySelectorAll('li');
+      var popupPictures = cardElement.querySelector('.popup__pictures');
+      var pictureItem = popupPictures.querySelectorAll('li');
       var featureFragment = document.createDocumentFragment();
       // Вывожу заголовок объявления
       cardElement.querySelector('h3').textContent = advert.offer.title;
@@ -39,6 +40,17 @@
         featureItem.className = 'feature feature--' + facilities[j];
         featureFragment.appendChild(featureItem);
       }
+
+      // Добавляю фотографии объявления
+
+      popupPictures.removeChild(pictureItem[0]);
+
+      for (var i = 0; i < photos.length; i++) {
+        var picture = document.createElement('li');
+        popupPictures.appendChild(picture);
+        picture.innerHTML = '<img src="' + photos[i] + '" style="max-width: 50px; max-height: 40px; padding-right: 4px;">';
+      }
+
       // Добавляю шаблон в шаблон))))
       popupFeatures.appendChild(featureFragment);
       // Описание объекта недвижимости

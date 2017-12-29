@@ -1,12 +1,11 @@
 'use strict';
 
-// Модуль, который работает с формой объявления
-
 (function () {
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var noticeForm = document.querySelector('.notice__form');
   var timeIn = noticeForm.querySelector('#timein');
   var timeOut = noticeForm.querySelector('#timeout');
-  var time = window.data.time;
+  var time = window.data.times;
 
   var syncValues = function (element, value) {
     element.value = value;
@@ -82,5 +81,27 @@
   noticeForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(noticeForm), resetForm, window.data.errorHandler);
     evt.preventDefault();
+  });
+
+  var avatarChooser = document.querySelector('.notice__photo input[type=file]');
+  var userAvatar = document.querySelector('.notice__preview img');
+
+  avatarChooser.addEventListener('change', function () {
+    var file = avatarChooser.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        userAvatar.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
   });
 })();

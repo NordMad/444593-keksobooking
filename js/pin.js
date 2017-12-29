@@ -1,7 +1,5 @@
 'use strict';
 
-// Модуль для отрисовки пина и взаимодействия с ним
-
 (function () {
   var map = document.querySelector('.map');
   var mapMarkers = map.querySelector('.map__pins');
@@ -57,9 +55,9 @@
     high: [50000, Number.MAX_VALUE]
   };
 
-  window.debounce = function (timerReset, func, delay) {
-    window.clearTimeout(timerReset);
-    timerReset = window.setTimeout(function () {
+  window.debounce = function (func, delay, timer) {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(function () {
       func();
     }, delay);
   };
@@ -86,10 +84,8 @@
     mapMarkers.insertBefore(getMarkers(filteredAdverts), muffin);
   };
 
-  var prevTimer;
-
   mapFilters.addEventListener('change', function () {
-    window.debounce(prevTimer, window.refreshFilteredAdverts, 500);
+    window.debounce(window.refreshFilteredAdverts, 500);
   });
 
   var address = document.querySelector('#address');

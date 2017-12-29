@@ -1,7 +1,5 @@
 'use strict';
 
-// Модуль, который работает с картой.
-
 (function () {
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
@@ -61,11 +59,22 @@
     }
   };
 
+  var getTarget = function (node, tagName) {
+    tagName = tagName.toUpperCase();
+    while (node) {
+      if (node.nodeType === 1 && node.nodeName === tagName) {
+        return node;
+      }
+      node = node.parentNode;
+    }
+    return null;
+  };
+
   // Добавляю обработчик события 'клик мыши' на mapMarkers и вызываю в нём фуикцию toggleMarkers
 
   mapMarkers.addEventListener('click', function (evt) {
-    var targetParent = evt.target.parentNode;
-    window.map.toggleMarkers(targetParent);
+    var clickTarget = getTarget(evt.target, 'button');
+    window.map.toggleMarkers(clickTarget);
   });
 
   // Дублирую обработчик на mapMarkers для клавиши Enter и закрытие .popup для ESC
