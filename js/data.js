@@ -1,11 +1,8 @@
 'use strict';
 
-// Модуль, который создает данные
-
 (function () {
-
-  // Данные
   window.data = {
+    times: ['12:00', '13:00', '14:00'],
     offerTypeNames: {
       flat: 'Квартира',
       house: 'Дом',
