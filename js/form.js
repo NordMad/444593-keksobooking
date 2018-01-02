@@ -68,11 +68,11 @@
 
   var formInput = noticeForm.querySelectorAll('input');
 
-  for (var i = 0; i < formInput.length; i++) {
-    formInput[i].addEventListener('invalid', function (evt) {
+  formInput.forEach(function (it) {
+    it.addEventListener('invalid', function (evt) {
       evt.target.style = 'border-color: red';
     });
-  }
+  });
 
   var resetForm = function () {
     noticeForm.reset();
@@ -99,6 +99,31 @@
 
       reader.addEventListener('load', function () {
         userAvatar.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  });
+
+  var photoChooser = document.querySelector('.form__photo-container input[type=file]');
+  var userPhoto = document.querySelector('.form__photo-container');
+
+  photoChooser.addEventListener('change', function () {
+    var file = photoChooser.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        var photo = document.createElement('img');
+        photo.src = reader.result;
+        photo.style = 'max-width: 250px;';
+        userPhoto.insertBefore(photo, userPhoto.children[0]);
       });
 
       reader.readAsDataURL(file);

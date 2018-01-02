@@ -8,7 +8,7 @@
   // Записываю функцию создания шаблона объявления
 
   window.card = {
-    cloneCardTemplate: function (advert) {
+    cloneTemplate: function (advert) {
       var cardElement = cardTemplate.cloneNode(true);
       var p = cardElement.querySelectorAll('p');
       var facilities = advert.offer.features;
@@ -31,26 +31,24 @@
       // Время заезда и выезда
       p[3].textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
       // Удаляю все клонированные li-шки с услугами
-      for (var j = 0; j < features.length; j++) {
-        popupFeatures.removeChild(features[j]);
-      }
+      features.forEach(function (it) {
+        popupFeatures.removeChild(it);
+      });
       // Создаю фрагмент с услугами из массива. Добавляю им классы
-      for (j = 0; j < facilities.length; j++) {
+      facilities.forEach(function (it) {
         var featureItem = document.createElement('li');
-        featureItem.className = 'feature feature--' + facilities[j];
+        featureItem.className = 'feature feature--' + it;
         featureFragment.appendChild(featureItem);
-      }
-
+      });
       // Добавляю фотографии объявления
-
       popupPictures.removeChild(pictureItem[0]);
-
-      for (var i = 0; i < photos.length; i++) {
-        var picture = document.createElement('li');
-        popupPictures.appendChild(picture);
-        picture.innerHTML = '<img src="' + photos[i] + '" style="max-width: 50px; max-height: 40px; padding-right: 4px;">';
-      }
-
+      photos.forEach(function (it) {
+        var photoItem = pictureItem[0].cloneNode(true);
+        var picture = photoItem.querySelector('img');
+        picture.src = it;
+        picture.style = 'max-width: 50px; max-height: 40px; padding-right: 4px;';
+        popupPictures.appendChild(photoItem);
+      });
       // Добавляю шаблон в шаблон))))
       popupFeatures.appendChild(featureFragment);
       // Описание объекта недвижимости

@@ -4,14 +4,14 @@
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
   var map = document.querySelector('.map');
+  var mapMarkers = map.querySelector('.map__pins');
   var mapFilters = map.querySelector('.map__filters-container');
   var noticeForm = document.querySelector('.notice__form');
   var noticeFormFieldset = noticeForm.querySelectorAll('fieldset');
   // Добавляю полям формы атрибут disabled
-  for (var i = 0; i < noticeFormFieldset.length; i++) {
-    noticeFormFieldset[i].disabled = true;
-  }
-  var mapMarkers = document.querySelector('.map__pins');
+  noticeFormFieldset.forEach(function (it) {
+    it.disabled = true;
+  });
   var clickedElement = null;
   var mapPopup = null;
 
@@ -25,9 +25,9 @@
       // делаю форму ...
       noticeForm.classList.remove('notice__form--disabled');
       // ...и её поля активными
-      for (i = 0; i < noticeFormFieldset.length; i++) {
-        noticeFormFieldset[i].disabled = false;
-      }
+      noticeFormFieldset.forEach(function (it) {
+        it.disabled = false;
+      });
     },
     closePopup: function () {
       if (mapPopup) {
@@ -74,7 +74,9 @@
 
   mapMarkers.addEventListener('click', function (evt) {
     var clickTarget = getTarget(evt.target, 'button');
-    window.map.toggleMarkers(clickTarget);
+    if (clickTarget !== null) {
+      window.map.toggleMarkers(clickTarget);
+    }
   });
 
   // Дублирую обработчик на mapMarkers для клавиши Enter и закрытие .popup для ESC

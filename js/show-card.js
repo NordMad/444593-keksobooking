@@ -2,7 +2,7 @@
 
 (function () {
   window.showCard = function (advert, container, insertBefore, onCloseFunction) {
-    var mapPopup = window.card.cloneCardTemplate(advert);
+    var mapPopup = window.card.cloneTemplate(advert);
     var popupCloseButton = mapPopup.querySelector('.popup__close');
     if (insertBefore === null) {
       container.appendChild(mapPopup);

@@ -1,14 +1,18 @@
 'use strict';
 
 (function () {
+  var URL_LOAD = 'https://1510.dump.academy/keksobooking/data';
+  var URL_SAVE = 'https://1510.dump.academy/keksobooking';
+  var STATUS_OK = 200;
+  var TIMEOUT = 10000;
+
   window.backend = {
     load: function (onLoad, onError) {
-      var URL = 'https://1510.dump.academy/keksobooking/data';
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === STATUS_OK) {
           onLoad(xhr.response);
         } else {
           onError('Произошла ошибка ' + xhr.status);
@@ -22,25 +26,24 @@
         onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
       });
 
-      xhr.timeout = 10000;
+      xhr.timeout = TIMEOUT;
 
-      xhr.open('GET', URL);
+      xhr.open('GET', URL_LOAD);
       xhr.send();
     },
     save: function (data, onLoad, onError) {
-      var URL = 'https://1510.dump.academy/keksobooking';
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === STATUS_OK) {
           onLoad();
         } else {
           onError('Произошла ошибка ' + xhr.status);
         }
       });
 
-      xhr.open('POST', URL);
+      xhr.open('POST', URL_SAVE);
       xhr.send(data);
     }
   };

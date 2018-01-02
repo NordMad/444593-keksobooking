@@ -55,7 +55,7 @@
     high: [50000, Number.MAX_VALUE]
   };
 
-  window.debounce = function (func, delay, timer) {
+  var debounce = function (func, delay, timer) {
     window.clearTimeout(timer);
     timer = window.setTimeout(function () {
       func();
@@ -85,7 +85,7 @@
   };
 
   mapFilters.addEventListener('change', function () {
-    window.debounce(window.refreshFilteredAdverts, 500);
+    debounce(window.refreshFilteredAdverts, 500);
   });
 
   var address = document.querySelector('#address');
