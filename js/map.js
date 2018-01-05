@@ -21,7 +21,7 @@
       // показываю карту
       map.classList.remove('map--faded');
       // размещаю маркеры на карте
-      window.refreshFilteredAdverts();
+      window.pin.refreshFilteredAdverts();
       // делаю форму ...
       noticeForm.classList.remove('notice__form--disabled');
       // ...и её поля активными

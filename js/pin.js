@@ -18,11 +18,15 @@
     var markersFragment = document.createDocumentFragment();
     for (var i = 0; i < adverts.length; i++) {
       var newMarker = document.createElement('button');
+      var markerImage = document.createElement('img');
       newMarker.style.left = parseInt(adverts[i].location.x, 10) + 'px';
       newMarker.style.top = parseInt(adverts[i].location.y, 10) + 'px';
       newMarker.className = 'map__pin';
-      newMarker.innerHTML = '<img src="' + adverts[i].author.avatar + '" width="40" height="40" draggable="false">';
       newMarker.dataset.pinIndex = i;
+      markerImage.src = adverts[i].author.avatar;
+      markerImage.style = 'width: 40px; height: 40px;';
+      markerImage.draggable = false;
+      newMarker.appendChild(markerImage);
       markersFragment.appendChild(newMarker);
     }
     return markersFragment;
@@ -55,37 +59,36 @@
     high: [50000, Number.MAX_VALUE]
   };
 
-  var debounce = function (func, delay, timer) {
-    window.clearTimeout(timer);
-    timer = window.setTimeout(function () {
-      func();
-    }, delay);
-  };
-
-  window.refreshFilteredAdverts = function () {
-    var filteredFeatures = Array.from(features).filter(function (it) {
-      return it.checked;
-    }).map(function (checked) {
-      return checked.value;
-    });
-
-    removeMarkers();
-    var adverts = window.data.adverts;
-    var range = prices[housingPrice.value];
-    var filteredAdverts = adverts.filter(function (advert) {
-      return (housingType.value === 'any' || advert.offer.type === housingType.value) &&
-      advert.offer.price >= range[0] && advert.offer.price < range[1] &&
-      (housingRooms.value === 'any' || advert.offer.rooms === parseInt(housingRooms.value, 10)) &&
-      (housingGuests.value === 'any' || advert.offer.guests === parseInt(housingGuests.value, 10)) &&
-      testAdvertFeatures(filteredFeatures, advert.offer.features);
-    }).slice(0, 5);
-
-    window.data.filteredAdverts = filteredAdverts;
-    mapMarkers.insertBefore(getMarkers(filteredAdverts), muffin);
+  window.pin = {
+    debounce: function (func, delay, timer) {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function () {
+        func();
+      }, delay);
+    },
+    refreshFilteredAdverts: function () {
+      var filteredFeatures = Array.from(features).filter(function (it) {
+        return it.checked;
+      }).map(function (checked) {
+        return checked.value;
+      });
+      removeMarkers();
+      var adverts = window.data.adverts;
+      var range = prices[housingPrice.value];
+      var filteredAdverts = adverts.filter(function (advert) {
+        return (housingType.value === 'any' || advert.offer.type === housingType.value) &&
+        advert.offer.price >= range[0] && advert.offer.price < range[1] &&
+        (housingRooms.value === 'any' || advert.offer.rooms === parseInt(housingRooms.value, 10)) &&
+        (housingGuests.value === 'any' || advert.offer.guests === parseInt(housingGuests.value, 10)) &&
+        testAdvertFeatures(filteredFeatures, advert.offer.features);
+      }).slice(0, 5);
+      window.data.filteredAdverts = filteredAdverts;
+      mapMarkers.insertBefore(getMarkers(filteredAdverts), muffin);
+    }
   };
 
   mapFilters.addEventListener('change', function () {
-    debounce(window.refreshFilteredAdverts, 500);
+    window.pin.debounce(window.pin.refreshFilteredAdverts, 500);
   });
 
   var address = document.querySelector('#address');
